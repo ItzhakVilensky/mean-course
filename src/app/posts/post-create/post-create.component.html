@@ -1,11 +1,12 @@
 <mat-card>
     <mat-form-field>
-        <input matInput="" type="text" [value]="enteredContent" />
+        <input matInput="" type="text" [value]="enteredTitle" />
     </mat-form-field>
 
     <mat-form-field>
-        <textarea matInput="" rows="6"></textarea>
+        <textarea matInput="" rows="6" [value]="enteredContent"></textarea>
     </mat-form-field>
+
     <button mat-raised-button color="accent" (click)="onAddPost()">Save post</button>
 </mat-card>
 <hr>
