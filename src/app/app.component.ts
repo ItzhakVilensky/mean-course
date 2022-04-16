@@ -7,9 +7,10 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
-  storedPosts: [{ title: '', content: '' }] = [{ title: '', content: '' }];
+  storedPosts: any[] = [];
 
-  onPostAdded(post: { title: '', content: '' }) {
+  onPostAdded(post: any[]) {
     this.storedPosts.push(post);
+    this.storedPosts.slice(0, 1);
   }
 }
