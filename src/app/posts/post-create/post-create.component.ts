@@ -7,8 +7,8 @@ import { Component, EventEmitter, Output } from "@angular/core";
 })
 export class PostCreateComponent {
 
-    enteredTitle = 'enteredTitle';
-    enteredContent = 'enteredContent';
+    enteredTitle = '';
+    enteredContent = '';
     @Output() postCreated = new EventEmitter();
 
     onAddPost() {
