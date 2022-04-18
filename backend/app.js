@@ -1,7 +1,10 @@
 const express = require('express');
 const { json } = require('stream/consumers');
-
+const bodyParser = require('body-parser');
 const app = express();
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false })); // redundant
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -12,7 +15,15 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api/posts', (req, res, next) => {
+app.post('/api/posts', (req, res, next) => {
+    const post = req.body;
+    console.log('$ New post: ', post);
+    res.status(201).json({
+        message: 'Post added successfully'
+    });
+});
+
+app.get('/api/posts', (req, res, next) => {
     // res.send('Hello from express!');
     const posts = [{
         id: 'id1',
