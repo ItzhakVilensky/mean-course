@@ -4,10 +4,11 @@ const { json } = require('stream/consumers');
 const bodyParser = require('body-parser');
 const Post = require('./models/post');
 const mongoose = require('mongoose');
+const user ='';
 const mongoPass = '';
 const mongoDb = '';
 
-mongoose.connect(`mongodb+srv://itzhak83:${mongoPass}@cluster0.kqwa5.mongodb.net/${mongoDb}?retryWrites=true&w=majority`)
+mongoose.connect(`mongodb+srv://${user}:${mongoPass}@cluster0.kqwa5.mongodb.net/${mongoDb}?retryWrites=true&w=majority`)
     .then(() => {
         console.log('Connected to Mongo DB');
     }).catch((err) => {
