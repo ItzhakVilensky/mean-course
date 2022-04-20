@@ -26,43 +26,40 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get('/api/posts', (req, res, next) => {
+    Post.find()
+        .then(documents => {
+            res.status(200).json({
+                message: 'Posts fetched succefully',
+                posts: documents
+            });
+        }).catch((err) => {
+            console.log('$ Post.find error: ', err);
+        });
+});
+
 app.post('/api/posts', (req, res, next) => {
     const post = new Post({
         title: req.body.title,
         content: req.body.content
     });
 
-    post.save();
-
-    res.status(201).json({
-        message: 'Post added successfully'
+    post.save().then(createdPost => {
+        res.status(201).json({
+            message: 'Post added successfully',
+            postId: createdPost._id
+        });
     });
 });
 
-app.get('/api/posts', (req, res, next) => {
-    // res.send('Hello from express!');
-    // const posts = [{
-    //     id: 'id1',
-    //     title: 'Server side post',
-    //     content: 'server side content'
-    // },
-    // {
-    //     id: 'id2',
-    //     title: 'Another server side post',
-    //     content: 'Another server side content'
-    // }];
+app.delete('/api/posts/:id', (req, res, next) => { // 
+    Post.deleteOne({ _id: req.params.id }).then(result => {
+        console.log('$ app.delete result: ', result);
 
-    Post.find()
-    .then(documents => {
         res.status(200).json({
-            message: 'Posts fetched succefully',
-            posts: documents
+            message: 'Post deleted succefully'
         });
-    }).catch((err) => {
-        console.log('$ Post.find error: ', err);
     });
-
-   
 });
 
 module.exports = app;
