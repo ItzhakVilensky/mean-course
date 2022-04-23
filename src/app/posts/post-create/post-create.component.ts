@@ -13,6 +13,7 @@ import { Post } from "../post.model";
 export class PostCreateComponent implements OnInit {
 
     post: Post = { id: '', content: '', title: '' };
+    isLoading = false;
     private pageMode: PageMode = 'create';
     private postId: string | null = null;
 
@@ -28,14 +29,16 @@ export class PostCreateComponent implements OnInit {
                 if (paramMap.has('postId')) {
                     this.pageMode = 'edit';
                     this.postId = paramMap.get('postId') as string;
+                    this.isLoading = true;
                     this.postService.getPost(this.postId)
-                    .subscribe(postData => {
-                        this.post = {
-                            id: postData._id,
-                            title: postData.title,
-                            content: postData.content
-                        }
-                    });
+                        .subscribe(postData => {
+                            this.isLoading = false;
+                            this.post = {
+                                id: postData._id,
+                                title: postData.title,
+                                content: postData.content
+                            }
+                        });
                 } else {
                     this.pageMode = 'create';
                     this.postId = null;
@@ -47,6 +50,7 @@ export class PostCreateComponent implements OnInit {
         if (form.invalid) {
             return;
         }
+        this.isLoading = true;
 
         if (this.pageMode === 'create') {
             this.postService.addPost(form.value.title, form.value.content);
