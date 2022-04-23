@@ -1,14 +1,14 @@
 <mat-card>
     <form (submit)="onSavePost(postForm)" #postForm="ngForm">
         <mat-form-field>
-            <input matInput="" type="text" name="title" [ngModel]="post.title" required minlength="3"
+            <input matInput="" type="text" name="title" [ngModel]="post?.title" required minlength="3"
                 #titleRef="ngModel" placeholder="Title" />
         </mat-form-field>
 
         <mat-error *ngIf="titleRef.invalid">Enter post title, at least 3 chars</mat-error>
 
         <mat-form-field>
-            <textarea matInput="" rows="6" name="content" [ngModel]="post.content" required #contentRef="ngModel"
+            <textarea matInput="" rows="6" name="content" [ngModel]="post?.content" required #contentRef="ngModel"
                 placeholder="Content"></textarea>
         </mat-form-field>
 
