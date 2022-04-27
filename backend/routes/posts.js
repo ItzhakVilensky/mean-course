@@ -12,7 +12,6 @@ router.get('', (req, res, next) => {
                 posts: documents
             });
         }).catch((err) => {
-            console.log('$ Post.find error: ', err);
         });
 });
 
@@ -50,8 +49,6 @@ router.put('/:id', (req, res, next) => { //
 
     Post.updateOne({ _id: req.params.id }, post)
         .then(result => {
-            console.log('$ Post updateOne result: ', result);
-
             res.status(200).json({
                 message: 'Post updated succefully'
             });
@@ -61,8 +58,6 @@ router.put('/:id', (req, res, next) => { //
 router.delete('/:id', (req, res, next) => {
     Post.deleteOne({ _id: req.params.id })
         .then(result => {
-            console.log('$ app deleteOne result: ', result);
-
             res.status(200).json({
                 message: 'Post deleted succefully'
             });

@@ -1,10 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
+import { Router } from "@angular/router";
 import { Observable, Subject } from "rxjs";
 import { map } from "rxjs/operators";
 import { Post } from "./post.model";
-import { Router } from "@angular/router";
-
 
 @Injectable({
     providedIn: 'root'
@@ -61,7 +60,6 @@ export class PostService {
                 this.router.navigate(['/']);
             });
     }
-
 
     updatePost(id: string, title: string, content: string) {
         const post: Post = { id: id, title: title, content: content };
