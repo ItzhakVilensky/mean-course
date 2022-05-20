@@ -11,7 +11,7 @@ import { Post } from "./post.model";
 export class PostService {
 
     private posts: Post[] = [];
-    private postsUpdated = new Subject<Post[]>();
+    private postsUpdated = new Subject<{ posts: Post[], postCount: number }>();
 
     constructor(private http: HttpClient, private router: Router) {
     }
@@ -19,28 +19,33 @@ export class PostService {
     getPosts(postsPerPage: number, currentPage: number) {
         const queryParams = `?pagesize=${postsPerPage}&page=${currentPage}`;
         this.http
-            .get<{ message: string, posts: any }>(
+            .get<{ message: string, posts: any, maxPosts: number }>(
                 'http://localhost:3000/api/posts' + queryParams
             ).pipe(
-                map((postData) => {
-                    return postData.posts
-                        .map((post: { title: any; content: any; _id: any; imagePath: any; }) => {
+                map(postData => {
+                    return {
+                        posts: postData.posts.map((post: any) => {
                             return {
                                 title: post.title,
                                 content: post.content,
                                 id: post._id,
                                 imagePath: post.imagePath
-                            }
-                        });
+                            };
+                        }),
+                        maxPosts: postData.maxPosts
+                    }
                 })
             )
             .subscribe((adaptedPosts) => {
-                this.posts = adaptedPosts;
-                this.postsUpdated.next([...this.posts]);
+                this.posts = adaptedPosts.posts;
+                this.postsUpdated.next({
+                    posts: [...this.posts],
+                    postCount: adaptedPosts.maxPosts
+                });
             });
     }
 
-    getPostUpdateListener(): Observable<Post[]> {
+    getPostUpdateListener(): Observable<{ posts: Post[], postCount: number }> {
         return this.postsUpdated.asObservable();
     }
 
@@ -62,15 +67,7 @@ export class PostService {
                 'http://localhost:3000/api/posts',
                 postData
             )
-            .subscribe((responseData) => {
-                const post: Post = {
-                    id: responseData.post.id,
-                    title: title,
-                    content: content,
-                    imagePath: responseData.post.imagePath
-                };
-                this.posts.push(post);
-                this.postsUpdated.next([...this.posts]);
+            .subscribe(responseData => {
                 this.router.navigate(['/']);
             });
     }
@@ -92,31 +89,16 @@ export class PostService {
             };
         }
         this.http.put('http://localhost:3000/api/posts/' + id, postData)
-            .subscribe((responseData) => {
-                const updatedPosts = [...this.posts];
-                const oldPostIndex = updatedPosts.findIndex(p => p.id === id);
-                const post: Post = {
-                    id: id,
-                    title: title,
-                    content: content,
-                    imagePath: '' // responseData.imagePath
-                };
-                updatedPosts[oldPostIndex] = post;
-                this.posts = updatedPosts;
-                this.postsUpdated.next([...this.posts]);
+            .subscribe(responseData => {
                 this.router.navigate(['/']);
             });
     }
 
     deletePost(postId: string) {
-        this.http.delete<{ acknowledged: boolean, deletedCount: number }>
+        return this.http.delete<{ acknowledged: boolean, deletedCount: number }>
             (
                 'http://localhost:3000/api/posts/' + postId
             )
-            .subscribe((responseData) => {
-                const postsUpdated = this.posts.filter(post => post.id !== postId);
-                this.posts = postsUpdated;
-                this.postsUpdated.next([...this.posts]);
-            });
+
     }
 }
